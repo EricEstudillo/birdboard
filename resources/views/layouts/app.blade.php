@@ -17,19 +17,19 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.css">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body class="bg-grey-light">
 <div id="app">
     <nav class="bg-white">
         <div class="container mx-auto">
             <div class="flex justify-between items-center py-2">
-
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-
+                <h1>
+                    <a class="navbar-brand" href="{{ url('/') }}">
+                        <img src="/images/logo.svg" alt="Birdboard">
+                    </a>
+                </h1>
                 <div>
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
