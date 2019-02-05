@@ -36,4 +36,15 @@ class ProjectTasksTest extends TestCase
     
     $this->post($project->path() . '/tasks', $task)->assertSessionHasErrors('body');
   }
+  
+  /**
+   * @test
+   */
+  public function only_the_owner_of_a_project_may_add_tasks()
+  {
+    $this->signIn();
+    $project = \factory(Project::class)->create();
+    $task = \factory(Task::class)->raw();
+    $this->post($project->path() . '/tasks', $task)->assertStatus(403);
+  }
 }

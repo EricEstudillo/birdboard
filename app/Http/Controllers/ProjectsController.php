@@ -34,7 +34,6 @@ class ProjectsController extends Controller
         ]);
 
         $user = auth()->user();
-//        dd($user->toArray());
         $user->projects()->create($attributes);
 
         return \redirect('/projects');

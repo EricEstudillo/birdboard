@@ -12,12 +12,14 @@ class TasksController extends Controller
     return view('projects.show', compact('project'));
   }
   
-  public function store(Project $project, Request $request )
+  public function store(Project $project, Request $request)
   {
-    $attributes = $request->validate([
-      'body' => 'required',
-    ]);
+    $request->validate(['body' => 'required',]);
+    
+    if (\auth()->user()->isNot($project->owner)) {
+      abort(403);
+    }
     $project->addTask(\request('body'));
-//    Task::create(['body' => \request('body'), 'project_id' => $project->id]);
+    return \redirect($project->path());
   }
 }
