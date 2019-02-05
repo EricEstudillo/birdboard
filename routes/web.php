@@ -1,15 +1,19 @@
 <?php
 
-Route::group(['middleware'=>'auth'],function(){
-    Route::post('/projects', 'ProjectsController@store');
-
-    Route::get('/projects/create', 'ProjectsController@create');
-    Route::get('/projects/{project}', 'ProjectsController@show');
-    Route::get('/projects', 'ProjectsController@index');
+Route::group(['middleware' => 'auth'], function () {
+  //TASK
+  Route::post('/projects/{project}/tasks', 'TasksController@store');
+  Route::get('/projects/{project}/tasks', 'TasksController@index');
+  
+  //PROJECT
+  Route::post('/projects', 'ProjectsController@store');
+  Route::get('/projects/create', 'ProjectsController@create');
+  Route::get('/projects/{project}', 'ProjectsController@show');
+  Route::get('/projects', 'ProjectsController@index');
 });
 
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
 });
 
 Auth::routes();
