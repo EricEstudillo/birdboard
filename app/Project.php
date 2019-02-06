@@ -8,7 +8,7 @@ class Project extends Model
 {
   protected $fillable = ['title', 'description', 'owner_id'];
   
-  public function path()
+  public function path():string
   {
     return '/projects/' . $this->id;
   }
@@ -23,8 +23,8 @@ class Project extends Model
     return $this->hasMany(Task::class);
   }
   
-  public function addTask(string $body): void
+  public function addTask(string $body): Task
   {
-    $this->tasks()->create(['body'=>$body]);
+    return $this->tasks()->create(['body'=>$body]);
   }
 }

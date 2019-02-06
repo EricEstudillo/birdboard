@@ -47,4 +47,29 @@ class ProjectTasksTest extends TestCase
     $task = \factory(Task::class)->raw();
     $this->post($project->path() . '/tasks', $task)->assertStatus(403);
   }
+  
+  /**
+   * @test
+   */
+  public function a_task_can_be_updated()
+  {
+    $this->signIn();
+    $project = \factory(Project::class)->create(['owner_id' => auth()->id()]);
+    $task = $project->addTask('test task');
+    $attributes = ['body' => 'updated body', 'completed' => true];
+    
+    $this->patch($task->path(), $attributes);
+    $this->get($task->project->path())->assertSee($attributes['body']);
+  }
+  
+  /**
+   * @test
+   */
+  public function only_the_owner_of_a_project_may_update_tasks()
+  {
+    $this->signIn();
+    $project = \factory(Project::class)->create();
+    $task = $project->addTask('not my task');
+    $this->patch($task->path(), ['body' => 'updated body'])->assertStatus(403);
+  }
 }

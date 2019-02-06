@@ -34,8 +34,8 @@ class ProjectsController extends Controller
         ]);
 
         $user = auth()->user();
-        $user->projects()->create($attributes);
+        $project = $user->projects()->create($attributes);
 
-        return \redirect('/projects');
+        return \redirect($project->path());
     }
 }

@@ -32,7 +32,10 @@ class ManageProjectsTest extends TestCase
   {
     $this->signIn();
     $attributes = factory(Project::class)->raw(['owner_id' => auth()->id()]);
-    $this->post('/projects', $attributes)->assertRedirect('/projects');
+    $response = $this->post('/projects', $attributes);
+    
+    $project = Project::where($attributes)->first();
+    $response->assertRedirect($project->path());
     
     $this->assertDatabaseHas('projects', $attributes);
     
@@ -69,8 +72,9 @@ class ManageProjectsTest extends TestCase
     $this->signIn();
     $attributes = factory(Project::class)->raw(['owner_id' => auth()->id()]);
     
-    $this->post('/projects', $attributes)
-      ->assertRedirect('/projects');
+    $response = $this->post('/projects', $attributes);
+    $project = Project::where($attributes)->first();
+    $response->assertRedirect($project->path());
   }
   
   /**
