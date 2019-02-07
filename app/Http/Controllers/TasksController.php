@@ -16,7 +16,7 @@ class TasksController extends Controller
   public function store(Project $project, Request $request)
   {
     $request->validate(['body' => 'required']);
-  
+    
     $this->authorize('update', $project);
     $project->addTask(\request('body'));
     
@@ -27,7 +27,6 @@ class TasksController extends Controller
   {
     $request->validate(['body' => 'required']);
     $this->authorize('update', $task->project);
-    
     $task->update([
       'body' => request('body'),
       'completed' => request()->has('completed')
