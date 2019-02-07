@@ -39,7 +39,25 @@ class ManageProjectsTest extends TestCase
     
     $this->assertDatabaseHas('projects', $attributes);
     
-    $this->get('/projects')->assertSee($attributes['title']);
+    $this->get($project->path())
+      ->assertSee($attributes['title'])
+      ->assertSee($attributes['description'])
+      ->assertSee($attributes['notes'])
+      ->assertSee($attributes['owner_id']);
+  }
+  
+  /**
+   * @test
+   */
+  public function a_user_can_update_a_project()
+  {
+    $this->signIn();
+    $project = factory(Project::class)->create(['owner_id' => auth()->id()]);
+    $attributes = ['notes' => 'new note',];
+    
+    $this->patch($project->path(), $attributes)->assertRedirect($project->path());
+    
+    $this->assertDatabaseHas('projects', $attributes);
   }
   
   /**
@@ -98,6 +116,18 @@ class ManageProjectsTest extends TestCase
     $project = factory(Project::class)->create();
     
     $this->get($project->path())
+      ->assertStatus(403);
+  }
+  
+  /**
+   * @test
+   */
+  public function an_authenticated_user_cannot_updte_the_projects_of_others()
+  {
+    $this->signIn();
+    $project = factory(Project::class)->create();
+    $attributes = ['notes' => 'new note'];
+    $this->patch($project->path(), $attributes)
       ->assertStatus(403);
   }
 }

@@ -21,8 +21,10 @@
                                 @method('PATCH')
                                 @csrf
                                 <div class="flex">
-                                    <input class="w-full {{$task->completed ? 'text-grey':''}}" name="body" value="{{$task->body}}"/>
-                                    <input type="checkbox" name="completed" onchange="this.form.submit()" {{$task->completed ? 'checked':''}}>
+                                    <input class="w-full {{$task->completed ? 'text-grey':''}}" name="body"
+                                           value="{{$task->body}}"/>
+                                    <input type="checkbox" name="completed"
+                                           onchange="this.form.submit()" {{$task->completed ? 'checked':''}}>
                                 </div>
                             </form>
                         </div>
@@ -37,7 +39,12 @@
                 </div>
                 <h2 class="text-lg text-grey font-normal mb-3">General Notes</h2>
                 {{--General Notes--}}
-                <textarea class="card w-full" style="min-height:200px">Lorem ipsum.</textarea>
+                <form action="{{$project->path()}}" method="post">
+                    @method('PATCH')
+                    @csrf
+                    <textarea class="card w-full" style="min-height:200px"> {{$project->notes}} </textarea>
+                    <button type="submit" class="button">Save</button>
+                </form>
             </div>
             <div class="lg:w-1/3 px-3 pb-6">
                 @include('projects.partials.card')

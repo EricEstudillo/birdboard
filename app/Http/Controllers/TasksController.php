@@ -16,20 +16,18 @@ class TasksController extends Controller
   public function store(Project $project, Request $request)
   {
     $request->validate(['body' => 'required']);
-    
-    if (\auth()->user()->isNot($project->owner)) {
-      abort(403);
-    }
+  
+    $this->authorize('update', $project);
     $project->addTask(\request('body'));
+    
     return \redirect($project->path());
   }
   
   public function update(Project $project, Task $task, Request $request)
   {
     $request->validate(['body' => 'required']);
-    if (\auth()->user()->isNot($project->owner)) {
-      abort(403);
-    }
+    $this->authorize('update', $task->project);
+    
     $task->update([
       'body' => request('body'),
       'completed' => request()->has('completed')

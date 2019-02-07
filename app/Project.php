@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-  protected $fillable = ['title', 'description', 'owner_id'];
+  protected $fillable = ['title', 'description', 'notes', 'owner_id'];
   
-  public function path():string
+  public function path(): string
   {
     return '/projects/' . $this->id;
   }
@@ -25,6 +25,6 @@ class Project extends Model
   
   public function addTask(string $body): Task
   {
-    return $this->tasks()->create(['body'=>$body]);
+    return $this->tasks()->create(['body' => $body]);
   }
 }
