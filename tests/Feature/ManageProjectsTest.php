@@ -23,6 +23,7 @@ class ManageProjectsTest extends TestCase
     $this->post('/projects', $project->toArray())->assertRedirect('/login');
     $this->get('/projects')->assertRedirect('/login');
     $this->get($project->path())->assertRedirect('/login');
+    $this->get($project->path() . '/edit')->assertRedirect('/login');
     $this->get('/projects/create')->assertRedirect('/login');
   }
   
@@ -51,7 +52,15 @@ class ManageProjectsTest extends TestCase
   public function a_user_can_update_a_project()
   {
     $project = ProjectFactory::create();
-    $attributes = ['notes' => 'new note',];
+    $attributes = [
+      'title' => 'changed',
+      'notes' => 'new note',
+      'description' => 'changed',
+    ];
+    
+    $this->actingAs($project->owner)
+      ->get($project->path() . '/edit')
+      ->assertOk();
     
     $this->actingAs($project->owner)
       ->patch($project->path(), $attributes)
@@ -122,11 +131,15 @@ class ManageProjectsTest extends TestCase
   /**
    * @test
    */
-  public function an_authenticated_user_cannot_updte_the_projects_of_others()
+  public function an_authenticated_user_cannot_update_the_projects_of_others()
   {
     $this->signIn();
     $project = factory(Project::class)->create();
-    $attributes = ['notes' => 'new note'];
+    $attributes = [
+      'title' => 'changed',
+      'notes' => 'new note',
+      'description' => 'changed',
+    ];
     $this->patch($project->path(), $attributes)
       ->assertStatus(403);
   }

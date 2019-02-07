@@ -13,35 +13,46 @@ class ProjectsController extends Controller
     return view('projects.index', compact('projects'));
   }
   
+  public function show(Project $project)
+  {
+    $this->authorize('update', $project);
+    
+    return \view('projects.show', compact('project'));
+  }
+  
   public function create()
   {
     return view('projects.create');
   }
   
-  public function show(Project $project)
-  {
-    $this->authorize('update',$project);
-    
-    return \view('projects.show', compact('project'));
-  }
-  
   public function store(Request $request)
   {
-    $attributes = $request->validate([
-      'title' => 'required',
-      'description' => 'required|max:100',
-      'notes' => ''
-    ]);
+    $attributes = $this->validateRequest($request);
     $user = auth()->user();
     $project = $user->projects()->create($attributes);
     
     return \redirect($project->path());
   }
   
-  public function update(Project $project)
+  public function edit(Project $project)
   {
-    $this->authorize('update',$project);
-    $project->update(request(['notes']));
+    return view('projects.edit', compact('project'));
+  }
+  
+  public function update(Project $project, Request $request)
+  {
+    $attributes = $this->validateRequest($request);
+    $this->authorize('update', $project);
+    $project->update($attributes);
     return \redirect($project->path());
+  }
+  
+  private function validateRequest(Request $request): array
+  {
+    return $request->validate([
+      'title' => 'required',
+      'description' => 'required|max:100',
+      'notes' => ''
+    ]);
   }
 }
