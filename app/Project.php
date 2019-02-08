@@ -34,15 +34,10 @@ class Project extends Model
   }
   
   /**
-   * @param Project $project
+   * @param string $description
    */
   public function recordActivity(string $description): void
   {
-    Activity::create(
-      [
-        'description' => $description,
-        'project_id' => $this->id
-      ]
-    );
+    $this->activity()->create(compact('description'));
   }
 }

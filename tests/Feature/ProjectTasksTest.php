@@ -31,13 +31,38 @@ class ProjectTasksTest extends TestCase
    */
   public function a_task_requires_a_body()
   {
-    $this->signIn();
     $project = ProjectFactory::create();
     $task = \factory(Task::class)->raw(['body' => '']);
     
     $this->actingAs($project->owner)
       ->post($project->path() . '/tasks', $task)
       ->assertSessionHasErrors('body');
+  }
+  
+  /**
+   * @test
+   */
+  public function a_task_can_be_completed()
+  {
+    $project = ProjectFactory::withTasks(1)->create();
+    $task = $project->tasks->first();
+    $attributes = ['body' => 'updated body', 'completed' => true];
+    
+    $this->actingAs($project->owner)->patch($task->path(), $attributes);
+    $this->get($task->project->path())->assertSee($attributes['body']);
+  }
+  
+  /**
+   * @test
+   */
+  public function a_task_can_be_marked_as_incomplete()
+  {
+    $task = \factory(Task::class)->create(['completed' => true]);
+    $project = $task->project;
+  
+    $attributes = ['body' => 'updated body', 'completed' => false];
+    $this->actingAs($project->owner)->patch($task->path(), $attributes);
+    $this->get($task->project->path())->assertSee($attributes['body']);
   }
   
   /**
