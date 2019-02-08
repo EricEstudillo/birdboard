@@ -9,7 +9,8 @@ class Task extends Model
 {
   protected $fillable = ['body', 'project_id', 'completed'];
   
-  protected $touches=['project'];
+  protected $touches = ['project'];
+  protected $casts = ['completed' => 'boolean'];
   
   public function path(): string
   {
@@ -19,5 +20,11 @@ class Task extends Model
   public function project(): BelongsTo
   {
     return $this->belongsTo(Project::class);
+  }
+  
+  public function complete(): void
+  {
+    $this->update(['completed' => true]);
+    $this->project->recordActivity('completed_task');
   }
 }

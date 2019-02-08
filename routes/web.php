@@ -1,5 +1,4 @@
 <?php
-
 Route::group(['middleware' => 'auth'], function () {
   //TASK
   Route::patch('/projects/{project}/tasks/{task}', 'TasksController@update');
