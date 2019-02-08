@@ -50,8 +50,8 @@ class ProjectsController extends Controller
   private function validateRequest(Request $request): array
   {
     return $request->validate([
-      'title' => 'required',
-      'description' => 'required|max:100',
+      'title' => 'sometimes|required',
+      'description' => 'sometimes|required|max:100',
       'notes' => ''
     ]);
   }
