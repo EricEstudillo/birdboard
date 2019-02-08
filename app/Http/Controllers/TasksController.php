@@ -31,11 +31,7 @@ class TasksController extends Controller
       'body' => request('body'),
     ]);
     
-    if (request()->has('completed')) {
-      $task->complete();
-    } else{
-      $task->incomplete();
-    }
+    request('completed') ? $task->complete() : $task->incomplete();
     
     return \redirect($project->path());
   }

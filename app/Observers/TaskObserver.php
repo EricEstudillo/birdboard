@@ -12,8 +12,13 @@ class TaskObserver
    * @param  \App\Task $task
    * @return void
    */
-  public function created(Task $task)
+  public function created(Task $task): void
   {
     $task->project->recordActivity('task created');
+  }
+  
+  public function deleted(Task $task): void
+  {
+    $task->project->recordActivity('task deleted');
   }
 }
