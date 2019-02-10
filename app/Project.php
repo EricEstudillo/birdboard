@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
   protected $fillable = ['title', 'description', 'notes', 'owner_id'];
+  public $old = [];
   
   public function path(): string
   {
@@ -38,6 +39,21 @@ class Project extends Model
    */
   public function recordActivity(string $description): void
   {
-    $this->activity()->create(compact('description'));
+    $this->activity()->create([
+      'description' => $description,
+      'changes' => $this->getActivityChanges($description),
+    ]);
+  }
+  
+  public function getActivityChanges(string $description): ?array
+  {
+    if ($description === 'updated') {
+      return [
+        'before' => \array_except(\array_diff($this->old, $this->getAttributes()),'updated_at'),
+        'after' => \array_except($this->getChanges(),'updated_at'),
+      ];
+    }
+    return null;
+    
   }
 }

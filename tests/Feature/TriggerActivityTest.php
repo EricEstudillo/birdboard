@@ -18,6 +18,10 @@ class TriggerActivityTest extends TestCase
   {
     $project = ProjectFactory::create();
     $this->assertCount(1, $project->activity);
+    tap($project->activity->last(), function ($activity) {
+      $this->assertEquals('created',$activity->description);
+      $this->assertNull($activity->changes);
+    });
   }
   
   /**
@@ -26,9 +30,17 @@ class TriggerActivityTest extends TestCase
   public function updating_a_project()
   {
     $project = ProjectFactory::create();
+    $originalProject = $project->title;
     $project->update(['title' => 'updated title']);
     $this->assertCount(2, $project->activity);
-    $this->assertEquals('updated', $project->activity->last()->description);
+    tap($project->activity->last(), function ($activity) use ($originalProject) {
+      $this->assertEquals('updated', $activity->description);
+      $expected = [
+        'before' => ['title' => $originalProject],
+        'after' => ['title' => 'updated title']
+      ];
+      $this->assertEquals($expected, $activity->changes);
+    });
   }
   
   /**
@@ -39,10 +51,10 @@ class TriggerActivityTest extends TestCase
     $project = ProjectFactory::create();
     $project->addTask('some task');
     $this->assertCount(2, $project->activity);
-    \tap($project->activity->last(),function($activity){
+    \tap($project->activity->last(), function ($activity) {
       $this->assertEquals('task_created', $activity->description);
-      $this->assertInstanceOf(Task::class,$activity->subject);
-      $this->assertEquals('some task',$activity->subject->body);
+      $this->assertInstanceOf(Task::class, $activity->subject);
+      $this->assertEquals('some task', $activity->subject->body);
     });
   }
   
